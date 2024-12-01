@@ -34,6 +34,7 @@ RUN bash /app/install/python/python.sh && \
     bash /app/install/node/node.sh && \
     bash /app/install/seaweedfs/seaweedfs.sh && \
     bash /app/install/chromedriver/chromedriver.sh && \
+    bash /app/install/firefox/firefox.sh && \
     bash /app/install/rod/rod.sh && \
     # Clean up unnecessary files
     rm -rf /app/install && \
