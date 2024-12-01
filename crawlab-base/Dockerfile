@@ -1,5 +1,9 @@
-# Use specific ubuntu version for better reproducibility
-FROM ubuntu:22.04 as builder
+# Use buildx syntax
+FROM --platform=$TARGETPLATFORM ubuntu:22.04 as builder
+
+# Add platform ARG
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
 
 # Combine ENV statements to reduce layers
 ENV DEBIAN_FRONTEND=noninteractive \
