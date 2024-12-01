@@ -1,57 +1,42 @@
-# images
-FROM ubuntu:22.04
+# Use specific ubuntu version for better reproducibility
+FROM ubuntu:22.04 as builder
 
-# set as non-interactive
-ENV DEBIAN_FRONTEND noninteractive
+# Combine ENV statements to reduce layers
+ENV DEBIAN_FRONTEND=noninteractive \
+    NODE_PATH=/usr/lib/node_modules \
+    TZ=Asia/Shanghai \
+    LC_ALL=C.UTF-8 \
+    LANG=C.UTF-8 \
+    CRAWLAB_DOCKER=Y \
+    GOPROXY=goproxy.io,direct
 
-# copy install scripts
+# Copy only necessary install scripts first
+COPY ./install/deps/deps.sh /app/install/deps/
+COPY ./install/python/requirements.txt /app/install/python/
+
+# Install dependencies in a single RUN to reduce layers
+RUN apt-get update && \
+    bash /app/install/deps/deps.sh && \
+    # Clean up APT cache to reduce image size
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy remaining install scripts
 COPY ./install /app/install
 
-# install deps
-RUN bash /app/install/deps/deps.sh
+# Install components in a single RUN to reduce layers
+RUN bash /app/install/python/python.sh && \
+    bash /app/install/golang/golang.sh && \
+    bash /app/install/node/node.sh && \
+    bash /app/install/seaweedfs/seaweedfs.sh && \
+    bash /app/install/chromedriver/chromedriver.sh && \
+    bash /app/install/rod/rod.sh && \
+    # Clean up unnecessary files
+    rm -rf /app/install && \
+    rm -rf /root/.cache && \
+    rm -rf /tmp/*
 
-# install python
-RUN bash /app/install/python/python.sh
-
-# install golang
-RUN bash /app/install/golang/golang.sh
-
-# install node
-RUN bash /app/install/node/node.sh
-
-# install java
-#RUN bash /app/install/java/java.sh
-
-# install seaweedfs
-RUN bash /app/install/seaweedfs/seaweedfs.sh
-
-# install chromedriver
-RUN bash /app/install/chromedriver/chromedriver.sh
-
-# install rod
-RUN bash /app/install/rod/rod.sh
-
-# working directory
 WORKDIR /app/backend
 
-# node path
-ENV NODE_PATH /usr/lib/node_modules
-
-# timezone environment
-ENV TZ Asia/Shanghai
-
-# language environment
-ENV LC_ALL C.UTF-8
-ENV LANG C.UTF-8
-
-# docker
-ENV CRAWLAB_DOCKER Y
-
-# goproxy
-ENV GOPROXY goproxy.io,direct
-
-# frontend port
-EXPOSE 8080
-
-# backend port
-EXPOSE 8000
+# Expose ports
+EXPOSE 8080 8000
