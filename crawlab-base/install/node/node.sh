@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # install node
-curl -sL https://deb.nodesource.com/setup_16.x -o /tmp/nodesource_setup.sh \
+curl -sL https://deb.nodesource.com/setup_20.x -o /tmp/nodesource_setup.sh \
   && bash /tmp/nodesource_setup.sh \
   && apt-get install -y nodejs
 
