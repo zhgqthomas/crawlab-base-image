@@ -11,7 +11,7 @@ on:
 
 env:
   IMAGE_PATH: crawlab-base
-  IMAGE_NAME: crawlabteam/crawlab-base
+  IMAGE_NAME: zhgqthomas/crawlab-base
 
 jobs:
   build:
@@ -39,10 +39,3 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ env.IMAGE_NAME }}:latest
-
-      - name: Trigger other workflows
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.WORKFLOW_ACCESS_TOKEN }}
-          repository: crawlab-team/crawlab
-          event-type: docker-crawlab
