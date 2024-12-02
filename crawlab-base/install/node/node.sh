@@ -10,7 +10,4 @@ npm install -g \
   yarn \
   pnpm \
   crawlab-sdk@latest \
-  puppeteer \
   playwright \
-  playwright-chromium \
-  crawlee
