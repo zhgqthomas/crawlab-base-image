@@ -11,3 +11,4 @@ npm install -g \
   pnpm \
   crawlab-sdk@latest \
   playwright \
+  crawlee
